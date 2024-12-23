@@ -1,0 +1,13 @@
+{
+    "entry": "./example.js",
+    "visible": false,
+    "author": "ratwithaface",
+    "prompts": [
+        {
+            "name": "example",
+            "message": "Do you want to run an example?",
+            "type": "list",
+            "choices": ["Yes", "No"]
+        }
+    ]
+}

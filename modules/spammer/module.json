@@ -1,0 +1,26 @@
+{
+	"entry": "./spam.js",
+	"visible": true, 
+	"author": "myname",
+	"prompts": [
+		{
+			"name": "channelId",
+			"type": "input",
+			"message": "Channel ID:"
+		}, {
+			"name": "msgContent",
+			"type": "input",
+			"message": "Message Content:"
+		}, {
+			"name": "mode",
+			"type": "list",
+			"message": "Mode:",
+			"choices": ["Balance", "Fullsend"]
+		}, {
+			"name": "interval",
+			"type": "number",
+			"message": "Message interval (ms):",
+			"default": "300"
+		}
+	]
+}
