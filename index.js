@@ -118,7 +118,7 @@ async function load(module, moduleJson, moduleName) {
         title(`Module: ${moduleName} - Herpes By FTG2085`)
         try {
             console.log(chalk.greenBright('Loading Module...'));
-            eval(module)
+            await eval(module)
         } catch (err) {
             console.error('Error reading or evaluating the module:', err)
         }
@@ -171,7 +171,7 @@ async function loadModules() {
         const moduleJsonPath = path.join(modulePath, 'module.json')
         const moduleJson = JSON.parse(fs.readFileSync(moduleJsonPath, 'utf-8'))
         const module = fs.readFileSync(path.join(modulePath, moduleJson.entry), 'utf-8')
-        load(module, moduleJson, answers.selectModule)
+        await load(module, moduleJson, answers.selectModule)
         await waitForKeyPress()
         mainMenu()
     })
