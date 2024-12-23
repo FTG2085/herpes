@@ -1,5 +1,5 @@
 {
-	"entry": "./spam.js",
+	"entry": "./spammer.js",
 	"visible": true, 
 	"author": "myname",
 	"prompts": [
