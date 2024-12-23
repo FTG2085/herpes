@@ -1,7 +1,8 @@
 {
 	"entry": "./spammer.js",
 	"visible": true, 
-	"author": "myname",
+	"author": "ratwithaface",
+	"recursive": true,
 	"prompts": [
 		{
 			"name": "channelId",

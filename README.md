@@ -54,6 +54,8 @@ The name of the folder that contains the module is the name. Every module has th
 `"entry"` **string**: the file path for the module script.
 `"visible"` **boolean**: whether or not the module is visible to Herpes.
 `"prompts"` **array**: any array of [inquirer prompt objects](https://www.npmjs.com/package/inquirer#objects)
+`"author"`	**string**: the name of the author
+`"recursive"` **boolean**: whether or not the module is a loop.
 
 ### Herpes Module Functions
 Each module has access to a few functions that are necessary for functionality. Modules are ran and processed in the Herpes `index.js` file, so there is no need to import these functions.
@@ -70,24 +72,24 @@ herpes.getToken()
  - `key` *string*: The key of the value to be retrieved.
  - returns *any*: The value associated with the given key, or undefined if no such value exists.
 
-**herpes.setStorageKey(module, key, value)**: Sets a key-value pair in a module's storage data.
+**setStorageKey(module, key, value)**: Sets a key-value pair in a module's storage data.
  - `module` *string*: The name of the module whose storage data is to be modified.
  - `key` *string*: The key of the value to be set.
  - `value` *any*: The value to be set.
 
-**herpes.getStorage(module)**: Retrieves and parses the storage data for a given module.
+**getStorage(module)**: Retrieves and parses the storage data for a given module.
  - `module` *string*: The name of the module whose storage data is to be retrieved.
  - returns *object*: The parsed JSON object representing the module's storage data.
 
-**herpes.setStorage('module', newStorage)**: Overwrites the storage data for a given module with the given new storage data.
+**setStorage('module', newStorage)**: Overwrites the storage data for a given module with the given new storage data.
  - `module` *string*: The name of the module whose storage data is to be overwritten.
  - `newStorage` *object*: The new storage data to be written over the module's storage data.
 
-**herpes.initStorage(module)**: Initializes a module's storage data by creating (or resetting) a new, empty JSON file at the path `storage/${module}.json`.
+**initStorage(module)**: Initializes a module's storage data by creating (or resetting) a new, empty JSON file at the path `storage/${module}.json`.
  - `module` *string*: The name of the module whose storage data is to be initialized.
 
-**herpes.getToken()**: Retrieves the first enabled token in the list of saved tokens.
-- returns *string*: The first enabled token, or undefined if no tokens are enabled.
+**getToken()**: Retrieves the first enabled token in the list of saved tokens.
+ - returns *string*: The first enabled token, or undefined if no tokens are enabled.
 
 ### Creating a Module
 Creating a module is easy! If you have an existing script you'd like to implement, this makes things even easier.
@@ -96,8 +98,8 @@ For example, below is a simple discord spamming script that has multiple user in
 **spam.js**:
 ```js
 // ==================== CONFIG ====================
-const  channelId  =  "1216870352831906037"  // Channel id (not user)
-const  token  =  "MTE4MjE0MzM5MDI4NTA0NTg4NA.GQUyau.q27VpbKGNWek9b6eJCRvJTkzB_wuTrLIcXsCPA"  // Your discord authentication token
+const  channelId  =  ""  // Channel id (not user)
+const  token  =  ""  // Your discord authentication token
 
 const  mode  =  2  // 1 = Balance | 2 = Fullsend
 const  content  =  '@everyone' // Message to spam
@@ -105,6 +107,8 @@ const  content  =  '@everyone' // Message to spam
 let  balanceInterval  =  300
 let  fullsendInterval  =  10000// Change only if you know what you're doing. This value should work perfectly.
 let  fullsendMessageAmount  =  23  // Change only if you know what you're doing. This value should work perfectly.
+
+let  headers  =  {"Content-Type": "application/json", "Authorization": token }
 
 // ====== BALANCE ======
 function  sendMessageBalance(cID, t, h, interval) {
@@ -181,9 +185,9 @@ This module will now prompt the user for a channel ID to spam, the message they 
 - const  token  =  "MTE4MjE0MzM5MDI4NTA0NTg4NA.GQUyau.q27VpbKGNWek9b6eJCRvJTkzB_wuTrLIcXsCPA"  // Your discord authentication token
 - const  mode  =  2  // 1 = Balance | 2 = Fullsend
 - const  content  =  '@everyone' // Message to spam
-+ const  answers  =  herpes.getStorageKey('spam', 'answers')
++ const  answers  =  getStorageKey('spam', 'answers')
 + const  channelId  =  answers.channelId
-+ const  token  =  herpes.getToken()
++ const  token  =  getToken()
 + const  mode  =  answers.mode  ==  'Balance'  ?  1  :  2
 + const  content  =  answers.msgContent
 
@@ -192,6 +196,7 @@ This module will now prompt the user for a channel ID to spam, the message they 
 + let  balanceInterval  =  answers.interval
 + let  fullsendInterval  =  answers.interval * 34
 let  fullsendMessageAmount  =  23  // Change only if you know what you're doing. This value should work perfectly.
+let  headers  =  {"Content-Type": "application/json", "Authorization": token } 
 
 // ====== BALANCE ======
 function  sendMessageBalance(cID, t, h, interval) {

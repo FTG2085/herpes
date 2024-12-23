@@ -1,7 +1,8 @@
 {
     "entry": "./example.js",
-    "visible": false,
+    "visible": true,
     "author": "ratwithaface",
+    "recursive": false,
     "prompts": [
         {
             "name": "example",

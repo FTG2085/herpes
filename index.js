@@ -102,26 +102,27 @@ function tokenManager() {
 }
 
 async function load(module, moduleJson, moduleName) {
-    if ("prompts" in moduleJson) {
-        inquirer.prompt(moduleJson.prompts).then(answers => {
-            herpes.initStorage(moduleName)
-            herpes.setStorageKey(moduleName, 'answers', answers)
-            title(`Module: ${moduleName} - Herpes By FTG2085`)
-            try {
-                console.log(chalk.greenBright('Loading Module...'))
-                eval(module)
-            } catch (err) {
-                console.error('Error reading or evaluating the module:', err)
-            }
-        })
-    } else {
+    async function evalModule() {
         title(`Module: ${moduleName} - Herpes By FTG2085`)
+        console.log('fella')
         try {
             console.log(chalk.greenBright('Loading Module...'));
             await eval(module)
+            if (!moduleJson.recursive) {
+                await waitForKeyPress()
+            }
         } catch (err) {
             console.error('Error reading or evaluating the module:', err)
         }
+    }
+    if ("prompts" in moduleJson) {
+        inquirer.prompt(moduleJson.prompts).then(async answers => {
+            herpes.initStorage(moduleName)
+            herpes.setStorageKey(moduleName, 'answers', answers)
+            evalModule()
+        })
+    } else {
+        evalModule()
     }
 }
 
@@ -132,8 +133,9 @@ function waitForKeyPress() {
             output: process.stdout,
         })
   
-        rl.question(chalk.yellowBright('Press ENTER to continue.'), () => {
+        rl.question(chalk.yellowBright('Press ENTER to continue.\n'), () => {
             rl.close()
+            mainMenu()
             resolve()
         })
     })
@@ -172,8 +174,6 @@ async function loadModules() {
         const moduleJson = JSON.parse(fs.readFileSync(moduleJsonPath, 'utf-8'))
         const module = fs.readFileSync(path.join(modulePath, moduleJson.entry), 'utf-8')
         await load(module, moduleJson, answers.selectModule)
-        await waitForKeyPress()
-        mainMenu()
     })
 }
 
