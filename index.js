@@ -8,14 +8,48 @@ const fs = require('fs')
 const path = require('path')
 const readline = require('readline')
 const herpes = require('./modules/herpes-main/herpes')
+const gradient = require('gradient-string')
 
-function title(subtext) {console.clear();console.log(chalk.red(figlet.textSync('Herpes', { horizontalLayout: 'full', font: '4Max' }))+'\n'+chalk.redBright(subtext)+'\n')};
+function title(subtext) {console.clear();console.log(gradient.summer(figlet.textSync('HERPES', { horizontalLayout: 'full', font: '4Max' }))+'\n'+chalk.cyanBright(chalk.bgBlue(subtext))+'\n')}
 
+const { execSync } = require('child_process')
+
+// Function to run shell commands
+function runCommand(command) {
+    try {
+        return execSync(command, { stdio: 'pipe', encoding: 'utf-8' }).trim()
+    } catch (error) {
+        console.error(`Error executing command: ${command}`)
+        console.error(error.message)
+        process.exit(1)
+    }
+}
+
+// Function to check for updates
+function checkForUpdates() {
+    console.log('Checking for updates...')
+
+    // Fetch latest changes from the remote repository
+    runCommand('git fetch origin')
+
+    // Compare local and remote branches
+    const localHash = runCommand('git rev-parse HEAD')
+    const remoteHash = runCommand('git rev-parse origin/master')
+
+    if (localHash !== remoteHash) {
+        return true
+    } else {
+        return false
+    }
+}
+
+// Token Manager
 function tokenManager() {
     title('Herpes Token Manager - By FTG2085')
     function tokens() {return JSON.parse(fs.readFileSync(path.resolve(__dirname, 'storage/tokens.json')))}
     ctokens = tokens()
 
+    // Display tokens
     if (ctokens.length === 0) {
         console.log(chalk.yellowBright('No tokens found!\n'))
     } else {
@@ -25,6 +59,7 @@ function tokenManager() {
         console.log('\n')
     }
 
+    // Token menu
     inquirer.prompt([
         {
             type: 'list',
@@ -36,6 +71,7 @@ function tokenManager() {
         switch (answers.tokenMenu) {
             case 'Enable/Disable Tokens':
                 var tokenChoices = []
+            
                 for (let i = 0; i < ctokens.length; i++) {
                     tokenChoices.push({name: ctokens[i].name, value: ctokens[i].name, checked: ctokens[i].enabled})
                 }
@@ -104,7 +140,6 @@ function tokenManager() {
 async function load(module, moduleJson, moduleName) {
     async function evalModule() {
         title(`Module: ${moduleName} - Herpes By FTG2085`)
-        console.log('fella')
         try {
             console.log(chalk.greenBright('Loading Module...'));
             await eval(module)
@@ -203,4 +238,4 @@ function mainMenu() {
     })
 }
 
-mainMenu()
+checkForUpdates() ? title('Herpes needs an update! Run "npm run update" to update.') : mainMenu()
